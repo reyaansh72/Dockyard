@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f3f5f1">
+    <title>Dockyard · Docker control center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <main class="login-screen" id="login-screen">
+      <section class="login-brand-panel">
+        <a class="brand login-brand" href="#overview"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 13h5v5H7zm7 0h5v5h-5zm7 0h5v5h-5zM14 6h5v5h-5zm-7 0h5v5H7zm3 14h15c-.7 4.2-3.7 6.5-8.4 6.5-4.2 0-6.6-2.2-6.6-6.5Z"/></svg></span><span class="brand-name">dockyard<span>.</span></span></a>
+        <div class="login-brand-copy"><span class="eyebrow">DOCKER CONTROL CENTER</span><h1>One place for your containers.</h1><p>Manage images, workloads, networks, and persistent data from a workspace built around your local Docker Engine.</p></div>
+        <div class="login-illustration" aria-hidden="true"><span class="login-stack stack-back"></span><span class="login-stack stack-mid"></span><span class="login-stack stack-front"><i></i><i></i><i></span><span class="login-orbit orbit-one"></span><span class="login-orbit orbit-two"></span></div>
+        <div class="login-brand-footer"><span>LOCAL DOCKER WORKSPACE</span><span>Local session · Password optional</span></div>
+      </section>
+      <section class="login-form-panel">
+        <div class="login-form-wrap"><div class="login-mobile-brand"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 13h5v5H7zm7 0h5v5h-5zm7 0h5v5h-5zM14 6h5v5h-5zm-7 0h5v5H7zm3 14h15c-.7 4.2-3.7 6.5-8.4 6.5-4.2 0-6.6-2.2-6.6-6.5Z"/></svg></span><span class="brand-name">dockyard<span>.</span></span></div>
+          <div class="eyebrow">WELCOME BACK</div><h2>Sign in to Dockyard</h2><p class="login-subtitle">Your local workspace is ready when you are.</p>
+          <div class="login-mode-note" id="login-mode-note" role="status"></div>
+          <form id="login-form">
+            <div class="form-field"><label for="login-username">Username</label><input id="login-username" name="username" type="text" autocomplete="username" list="saved-user-list" placeholder="admin" required><datalist id="saved-user-list"></datalist></div>
+            <div class="form-field" id="login-password-field"><label for="login-password">Password</label><div class="password-input"><input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password"><button class="password-toggle" id="password-toggle" type="button" aria-label="Show password">Show</button></div></div>
+            <label class="login-remember form-check"><input id="remember-user" type="checkbox" checked><span>Remember this profile and keep me signed in</span></label>
+            <p class="login-error hidden" id="login-error" role="alert"></p>
+            <button class="button button-primary login-submit" id="login-submit" type="submit"><span>Continue to workspace</span><b>→</b></button>
+          </form>
+          <div class="login-divider"><span></span><small>LOCAL DOCKER ENGINE</small><span></span></div>
+          <p class="login-security" id="login-security">Sign-in settings are managed by your Dockyard host.</p>
+        </div>
+        <div class="login-bottom"><span>DOCKYARD · LOCAL FIRST</span><button id="login-theme-toggle" class="text-button" type="button">◐ Appearance</button></div>
+      </section>
+    </main>
+
+    <div class="app-shell" id="app-shell" hidden>
+      <aside class="sidebar" id="sidebar">
+        <a class="brand" href="#overview" aria-label="Dockyard overview">
+          <span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 13h5v5H7zm7 0h5v5h-5zm7 0h5v5h-5zM14 6h5v5h-5zm-7 0h5v5H7zm3 14h15c-.7 4.2-3.7 6.5-8.4 6.5-4.2 0-6.6-2.2-6.6-6.5Z"/></svg></span>
+          <span class="brand-name">dockyard<span>.</span></span>
+        </a>
+        <div class="workspace-switcher"><span class="workspace-glyph">L</span><span class="workspace-copy"><b>Local machine</b><small>Docker Engine</small></span><span class="chevron">⌄</span></div>
+        <div class="nav-label">WORKSPACE</div>
+        <nav class="primary-nav" aria-label="Main navigation">
+          <a class="nav-link active" href="#overview" data-page="overview"><span class="nav-icon">◫</span>Overview</a>
+          <a class="nav-link" href="#containers" data-page="containers"><span class="nav-icon">▣</span>Containers<span class="nav-count" id="nav-containers">—</span></a>
+          <a class="nav-link" href="#images" data-page="images"><span class="nav-icon">▤</span>Images<span class="nav-count" id="nav-images">—</span></a>
+          <a class="nav-link" href="#networks" data-page="networks"><span class="nav-icon">⌘</span>Networks</a>
+          <a class="nav-link" href="#volumes" data-page="volumes"><span class="nav-icon">◈</span>Volumes</a>
+          <a class="nav-link" href="#activity" data-page="activity"><span class="nav-icon">◷</span>Activity</a>
+          <a class="nav-link" href="#monitor" data-page="monitor"><span class="nav-icon">⌁</span>Resource monitor</a>
+          <a class="nav-link" href="#events" data-page="events"><span class="nav-icon">◷</span>Docker events</a>
+        </nav>
+        <div class="nav-label tools-label">TOOLS</div>
+        <nav class="primary-nav" aria-label="Tools">
+          <a class="nav-link" href="#cleanup" data-page="cleanup"><span class="nav-icon">⌁</span>Cleanup</a>
+          <a class="nav-link" href="#settings" data-page="settings"><span class="nav-icon">⚙</span>Settings</a>
+          <a class="nav-link" href="#about" data-page="about"><span class="nav-icon">ⓘ</span>About</a>
+          <button class="nav-link nav-button" id="theme-open"><span class="nav-icon">◉</span>Appearance<span class="nav-trailing">↗</span></button>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="engine-card"><div class="engine-card-top"><span class="engine-led" id="engine-led"></span><span id="engine-state">Connecting</span><button class="icon-button tiny" id="refresh-button" aria-label="Refresh data" title="Refresh">↻</button></div><div class="engine-version" id="engine-version">Checking Docker Engine</div></div>
+          <div class="profile-line"><span class="profile-avatar" id="profile-avatar">D</span><span><b id="profile-name">Docker host</b><small>Local context</small></span><button class="profile-logout" id="logout-button" title="Sign out" aria-label="Sign out">↪</button></div>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <button class="icon-button mobile-menu" id="mobile-menu" aria-label="Toggle navigation">☰</button>
+          <div class="breadcrumb"><span>Workspace</span><span class="crumb-divider">/</span><strong id="breadcrumb-current">Overview</strong></div>
+          <div class="topbar-actions"><div class="connection-pill" id="connection-pill"><span class="status-dot"></span><span>Connecting</span></div><button class="icon-button" id="mode-toggle" aria-label="Toggle light and dark mode" title="Toggle light and dark mode">◐</button><button class="icon-button" id="top-refresh" aria-label="Refresh" title="Refresh">↻</button><button class="button button-primary top-create" data-action="create-container"><span>＋</span> New container</button></div>
+        </header>
+
+        <section class="page-content" id="page-content" aria-live="polite">
+          <section class="view active" id="view-overview">
+            <div class="page-heading"><div><div class="eyebrow"><span class="eyebrow-mark"></span>DOCKER CONTROL CENTER</div><h1>Good to see you.</h1><p class="heading-subtitle">Here’s what’s happening across your Docker host.</p></div><div class="heading-meta"><span class="updated-mark"></span><span id="last-updated">Waiting for engine</span></div></div>
+            <div class="connection-alert hidden" id="connection-alert"><span class="alert-symbol">!</span><div><b>Docker Engine is unreachable</b><p id="connection-message">Check that Docker is running and this user can access the Docker socket.</p></div><button class="text-button" id="retry-button">Retry connection <span>→</span></button></div>
+            <div class="stats-grid">
+              <article class="stat-card stat-primary"><div class="stat-top"><span>Containers</span><span class="stat-icon">▣</span></div><div class="stat-value" id="stat-containers">—</div><div class="stat-foot"><span class="live-pip"></span><span id="stat-running">— running</span><span class="stat-separator">·</span><span id="stat-stopped">— stopped</span></div><div class="stat-spark spark-green"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+              <article class="stat-card"><div class="stat-top"><span>Images</span><span class="stat-icon image-icon">▤</span></div><div class="stat-value" id="stat-images">—</div><div class="stat-foot"><span id="image-storage">Local image library</span></div><div class="stat-spark spark-blue"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+              <article class="stat-card"><div class="stat-top"><span>Networks</span><span class="stat-icon network-icon">⌘</span></div><div class="stat-value" id="stat-networks">—</div><div class="stat-foot"><span id="network-subtitle">Bridge, host & custom</span></div><div class="stat-spark spark-orange"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+              <article class="stat-card"><div class="stat-top"><span>Volumes</span><span class="stat-icon volume-icon">◈</span></div><div class="stat-value" id="stat-volumes">—</div><div class="stat-foot"><span id="volume-subtitle">Persistent data stores</span></div><div class="stat-spark spark-pink"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+            </div>
+            <div class="overview-grid">
+              <section class="panel resource-panel"><div class="panel-heading"><div><h2>Container activity</h2><p>Current state of your workloads</p></div><a class="panel-link" href="#containers" data-page="containers">All containers <span>→</span></a></div><div class="activity-content"><div class="activity-chart"><div class="chart-scale"><span>100%</span><span>75%</span><span>50%</span><span>25%</span><span>0</span></div><div class="chart-area" id="activity-chart"><div class="chart-gridlines"><i></i><i></i><i></i><i></i></div><div class="chart-bars" id="chart-bars"><span class="chart-empty">No container activity yet</span></div></div></div><div class="chart-legend"><span><i class="legend-dot running-legend"></i>Running</span><span><i class="legend-dot stopped-legend"></i>Stopped</span><span class="chart-period">Live snapshot</span></div></div></section>
+              <section class="panel host-panel"><div class="panel-heading"><div><h2>Host details</h2><p>Your Docker environment</p></div><span class="host-icon">⌂</span></div><div class="host-list"><div><span>Hostname</span><b id="host-name">—</b></div><div><span>Docker version</span><b id="host-docker-version">—</b></div><div><span>Operating system</span><b id="host-os">—</b></div><div><span>Architecture</span><b id="host-architecture">—</b></div><div><span>CPUs</span><b id="host-cpus">—</b></div><div><span>Memory</span><b id="host-memory">—</b></div></div><div class="host-footer"><span class="engine-led"></span><span>Local engine</span><span class="host-context">default context</span></div></section>
+            </div>
+            <section class="panel recent-panel"><div class="panel-heading"><div><h2>Recent containers</h2><p>Latest workloads on this host</p></div><a class="panel-link" href="#containers" data-page="containers">Manage containers <span>→</span></a></div><div class="table-wrap"><table><thead><tr><th>NAME</th><th>IMAGE</th><th>STATUS</th><th>CREATED</th><th></th></tr></thead><tbody id="recent-containers"><tr><td colspan="5" class="table-placeholder">Connect to Docker to see your containers</td></tr></tbody></table></div></section>
+          </section>
+
+          <section class="view" id="view-containers"><div class="page-heading compact-heading"><div><div class="eyebrow">WORKLOADS</div><h1>Containers</h1><p class="heading-subtitle">Create, monitor and control your running workloads.</p></div><button class="button button-primary" data-action="create-container"><span>＋</span> Create container</button></div><div class="toolbar"><div class="search-field"><span>⌕</span><input id="container-search" type="search" placeholder="Search containers" aria-label="Search containers"><kbd>/</kbd></div><div class="toolbar-right"><select id="container-filter" aria-label="Filter containers"><option value="all">All states</option><option value="running">Running</option><option value="stopped">Stopped</option></select><button class="button button-quiet" id="container-refresh">↻ <span>Refresh</span></button><button class="button button-outline" data-action="prune-containers">Clean stopped</button></div></div><section class="panel list-panel"><div class="table-wrap"><table class="data-table"><thead><tr><th><button class="sort-button" data-sort="name">CONTAINER <span>↕</span></button></th><th>IMAGE</th><th>STATUS</th><th>PORTS</th><th><button class="sort-button" data-sort="created">CREATED <span>↕</span></button></th><th class="actions-heading">ACTIONS</th></tr></thead><tbody id="containers-table"><tr><td colspan="6" class="table-placeholder">Loading containers…</td></tr></tbody></table></div><div class="table-footer"><span id="container-count">0 containers</span><span>Docker Engine · Local</span></div></section></section>
+
+          <section class="view" id="view-images"><div class="page-heading compact-heading"><div><div class="eyebrow">IMAGE LIBRARY</div><h1>Images</h1><p class="heading-subtitle">Pull from registries, tag versions and launch containers.</p></div><button class="button button-primary" data-action="pull-image"><span>↓</span> Pull image</button></div><div class="toolbar"><div class="search-field"><span>⌕</span><input id="image-search" type="search" placeholder="Search images" aria-label="Search images"><kbd>/</kbd></div><div class="toolbar-right"><button class="button button-quiet" id="image-refresh">↻ <span>Refresh</span></button><button class="button button-outline" data-action="prune-images">Prune unused</button></div></div><section class="panel list-panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>REPOSITORY</th><th>TAG</th><th>IMAGE ID</th><th>SIZE</th><th>CREATED</th><th class="actions-heading">ACTIONS</th></tr></thead><tbody id="images-table"><tr><td colspan="6" class="table-placeholder">Loading images…</td></tr></tbody></table></div><div class="table-footer"><span id="image-count">0 images</span><span>Docker Hub and configured registries</span></div></section><div class="image-tip"><span class="tip-icon">↳</span><span><b>Quick start</b> Pull an image such as <code>nginx:alpine</code> or <code>postgres:16</code>, then create a container in one step.</span><button class="text-button" data-action="pull-image">Pull an image <span>→</span></button></div></section>
+
+          <section class="view" id="view-networks"><div class="page-heading compact-heading"><div><div class="eyebrow">CONNECTIVITY</div><h1>Networks</h1><p class="heading-subtitle">Connect containers with isolated virtual networks.</p></div><button class="button button-primary" data-action="create-network"><span>＋</span> Create network</button></div><div class="toolbar"><div class="search-field"><span>⌕</span><input id="network-search" type="search" placeholder="Search networks" aria-label="Search networks"><kbd>/</kbd></div><div class="toolbar-right"><button class="button button-quiet" id="network-refresh">↻ <span>Refresh</span></button><button class="button button-outline" data-action="prune-networks">Prune unused</button></div></div><section class="panel list-panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>NETWORK</th><th>DRIVER</th><th>SCOPE</th><th>SUBNET</th><th>CONTAINERS</th><th class="actions-heading">ACTIONS</th></tr></thead><tbody id="networks-table"><tr><td colspan="6" class="table-placeholder">Loading networks…</td></tr></tbody></table></div><div class="table-footer"><span id="network-count">0 networks</span><span>Built-in and custom networks</span></div></section></section>
+
+          <section class="view" id="view-volumes"><div class="page-heading compact-heading"><div><div class="eyebrow">PERSISTENT STORAGE</div><h1>Volumes</h1><p class="heading-subtitle">Manage data that lives beyond a container’s lifecycle.</p></div><button class="button button-primary" data-action="create-volume"><span>＋</span> Create volume</button></div><div class="toolbar"><div class="search-field"><span>⌕</span><input id="volume-search" type="search" placeholder="Search volumes" aria-label="Search volumes"><kbd>/</kbd></div><div class="toolbar-right"><button class="button button-quiet" id="volume-refresh">↻ <span>Refresh</span></button><button class="button button-outline" data-action="prune-volumes">Prune unused</button></div></div><section class="panel list-panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>VOLUME</th><th>DRIVER</th><th>MOUNTPOINT</th><th>CREATED</th><th class="actions-heading">ACTIONS</th></tr></thead><tbody id="volumes-table"><tr><td colspan="5" class="table-placeholder">Loading volumes…</td></tr></tbody></table></div><div class="table-footer"><span id="volume-count">0 volumes</span><span>Persistent Docker data</span></div></section></section>
+
+          <section class="view" id="view-cleanup"><div class="page-heading compact-heading"><div><div class="eyebrow">SYSTEM MAINTENANCE</div><h1>Cleanup</h1><p class="heading-subtitle">Reclaim disk space by removing unused Docker resources.</p></div><span class="cleanup-badge">Review before pruning</span></div><div class="cleanup-grid"><article class="cleanup-item"><div class="cleanup-icon cleanup-container">▣</div><div class="cleanup-copy"><h2>Stopped containers</h2><p>Remove all stopped containers. Their writable layers will be deleted.</p><span class="cleanup-command">docker container prune</span></div><button class="button button-outline" data-action="prune-containers">Prune containers</button></article><article class="cleanup-item"><div class="cleanup-icon cleanup-image">▤</div><div class="cleanup-copy"><h2>Unused images</h2><p>Remove images not referenced by any existing container.</p><span class="cleanup-command">docker image prune -a</span></div><button class="button button-outline" data-action="prune-images">Prune images</button></article><article class="cleanup-item"><div class="cleanup-icon cleanup-network">⌘</div><div class="cleanup-copy"><h2>Unused networks</h2><p>Remove custom networks not used by at least one container.</p><span class="cleanup-command">docker network prune</span></div><button class="button button-outline" data-action="prune-networks">Prune networks</button></article><article class="cleanup-item"><div class="cleanup-icon cleanup-volume">◈</div><div class="cleanup-copy"><h2>Unused volumes</h2><p>Remove unused local volumes. Data in those volumes cannot be recovered.</p><span class="cleanup-command">docker volume prune</span></div><button class="button button-outline" data-action="prune-volumes">Prune volumes</button></article><article class="cleanup-item cleanup-build"><div class="cleanup-icon cleanup-build-icon">⌁</div><div class="cleanup-copy"><h2>Build cache</h2><p>Remove build cache that is no longer used by active builds.</p><span class="cleanup-command">docker builder prune</span></div><button class="button button-outline" data-action="prune-build">Prune cache</button></article></div><div class="cleanup-note"><span>!</span><p>Prune actions are permanent. Docker removes only resources that are not currently in use. Review the confirmation before continuing.</p></div></section>
+        </section>
+        <footer class="app-footer"><span>DOCKYARD <span class="footer-dot">·</span> LOCAL DOCKER CONTROL</span><span id="footer-engine">Docker Engine · Connecting</span></footer>
+      </main>
+    </div>
+
+    <div class="modal-layer hidden" id="modal-layer" role="presentation"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal-head"><div><div class="eyebrow" id="modal-eyebrow">DOCKER RESOURCE</div><h2 id="modal-title">Create container</h2></div><button class="icon-button modal-close" id="modal-close" aria-label="Close dialog">×</button></div><div class="modal-content" id="modal-content"></div><div class="modal-actions" id="modal-actions"></div></section></div>
+    <div class="palette-layer hidden" id="palette-layer" role="presentation"><section class="command-palette" role="dialog" aria-modal="true" aria-label="Command palette"><div class="palette-input-wrap"><span>⌕</span><input id="palette-search" type="search" placeholder="Search pages and actions…" autocomplete="off"><kbd>ESC</kbd></div><div class="palette-results" id="palette-results"></div><div class="palette-footer"><span>Navigate</span><span><kbd>↑</kbd><kbd>↓</kbd> Select</span><span><kbd>↵</kbd> Open</span><span class="palette-shortcut">Ctrl K</span></div></section></div>
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+  </body>
+</html>

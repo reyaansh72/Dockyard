@@ -1,0 +1,326 @@
+{
+  "version": 1,
+  "description": "Editable starter image catalog. Add entries to make them appear in Dockyard's pull image picker.",
+  "images": [
+    {
+      "image": "nginx:alpine",
+      "name": "Nginx",
+      "category": "Web",
+      "description": "Lightweight web server and reverse proxy.",
+      "tags": ["web", "proxy", "popular"],
+      "color": "#4f9b76"
+    },
+    {
+      "image": "caddy:alpine",
+      "name": "Caddy",
+      "category": "Web",
+      "description": "Automatic HTTPS web server with clean Caddyfile config.",
+      "tags": ["web", "https", "proxy"],
+      "color": "#4d83b2"
+    },
+    {
+      "image": "httpd:alpine",
+      "name": "Apache HTTP Server",
+      "category": "Web",
+      "description": "The familiar, flexible HTTP server.",
+      "tags": ["web", "apache"],
+      "color": "#bc7953"
+    },
+    {
+      "image": "postgres:16-alpine",
+      "name": "PostgreSQL",
+      "category": "Database",
+      "description": "Reliable relational database for production workloads.",
+      "tags": ["database", "sql", "popular"],
+      "color": "#557fac"
+    },
+    {
+      "image": "mysql:8.4",
+      "name": "MySQL",
+      "category": "Database",
+      "description": "Open-source relational database management system.",
+      "tags": ["database", "sql"],
+      "color": "#bd8653"
+    },
+    {
+      "image": "mariadb:11",
+      "name": "MariaDB",
+      "category": "Database",
+      "description": "Community-developed, drop-in relational replacement for MySQL.",
+      "tags": ["database", "sql"],
+      "color": "#ac7254"
+    },
+    {
+      "image": "redis:7-alpine",
+      "name": "Redis",
+      "category": "Database",
+      "description": "In-memory data structure store, database, cache, and message broker.",
+      "tags": ["database", "cache", "popular"],
+      "color": "#bd5e54"
+    },
+    {
+      "image": "mongo:7",
+      "name": "MongoDB",
+      "category": "Database",
+      "description": "Document-oriented NoSQL database designed for modern apps.",
+      "tags": ["database", "nosql"],
+      "color": "#51936b"
+    },
+    {
+      "image": "clickhouse/clickhouse-server:latest",
+      "name": "ClickHouse",
+      "category": "Database",
+      "description": "Column-oriented DBMS for real-time analytical reporting.",
+      "tags": ["database", "analytics", "sql"],
+      "color": "#cc9a3b"
+    },
+    {
+      "image": "node:22-alpine",
+      "name": "Node.js",
+      "category": "Runtime",
+      "description": "JavaScript runtime environment on a compact Alpine base.",
+      "tags": ["runtime", "javascript", "popular"],
+      "color": "#77964d"
+    },
+    {
+      "image": "python:3.13-slim",
+      "name": "Python",
+      "category": "Runtime",
+      "description": "Python runtime in a lightweight Debian image.",
+      "tags": ["runtime", "python"],
+      "color": "#557ca0"
+    },
+    {
+      "image": "golang:1.24-alpine",
+      "name": "Go",
+      "category": "Runtime",
+      "description": "Go toolchain and development environment on Alpine Linux.",
+      "tags": ["runtime", "golang", "build"],
+      "color": "#4c9cac"
+    },
+    {
+      "image": "rust:1.85-alpine",
+      "name": "Rust",
+      "category": "Runtime",
+      "description": "Official Rust programming language compiler environment.",
+      "tags": ["runtime", "rust", "build"],
+      "color": "#aa6849"
+    },
+    {
+      "image": "eclipse-temurin:21-jre-alpine",
+      "name": "Java OpenJDK",
+      "category": "Runtime",
+      "description": "Eclipse Temurin Java 21 LTS runtime environment.",
+      "tags": ["runtime", "java"],
+      "color": "#a85f57"
+    },
+    {
+      "image": "php:8.3-fpm-alpine",
+      "name": "PHP-FPM",
+      "category": "Runtime",
+      "description": "PHP FastCGI Process Manager for high-performance web hosting.",
+      "tags": ["runtime", "php", "web"],
+      "color": "#787cb5"
+    },
+    {
+      "image": "ruby:3.3-alpine",
+      "name": "Ruby",
+      "category": "Runtime",
+      "description": "Dynamic, open-source programming language image.",
+      "tags": ["runtime", "ruby"],
+      "color": "#a84e49"
+    },
+    {
+      "image": "alpine:3.21",
+      "name": "Alpine Linux",
+      "category": "Base",
+      "description": "Ultra-small, security-focused Linux distribution.",
+      "tags": ["base", "linux", "popular"],
+      "color": "#4787ba"
+    },
+    {
+      "image": "ubuntu:24.04",
+      "name": "Ubuntu",
+      "category": "Base",
+      "description": "General-purpose Ubuntu LTS base container environment.",
+      "tags": ["base", "linux"],
+      "color": "#c05e5c"
+    },
+    {
+      "image": "debian:bookworm-slim",
+      "name": "Debian",
+      "category": "Base",
+      "description": "Minimal Debian Linux distribution environment.",
+      "tags": ["base", "linux"],
+      "color": "#a34b5c"
+    },
+    {
+      "image": "traefik:v3.3",
+      "name": "Traefik",
+      "category": "Networking",
+      "description": "Cloud-native edge router, load balancer, and reverse proxy.",
+      "tags": ["networking", "proxy", "routing"],
+      "color": "#50a48a"
+    },
+    {
+      "image": "haproxy:3.0-alpine",
+      "name": "HAProxy",
+      "category": "Networking",
+      "description": "Reliable, high-performance TCP/HTTP load balancer.",
+      "tags": ["networking", "proxy", "loadbalancer"],
+      "color": "#3f84af"
+    },
+    {
+      "image": "jc21/nginx-proxy-manager:latest",
+      "name": "Nginx Proxy Manager",
+      "category": "Networking",
+      "description": "Web UI for managing reverse proxies with SSL automation.",
+      "tags": ["networking", "proxy", "ui"],
+      "color": "#48956c"
+    },
+    {
+      "image": "rabbitmq:4-management-alpine",
+      "name": "RabbitMQ",
+      "category": "Messaging",
+      "description": "Feature-rich message broker with built-in management UI.",
+      "tags": ["messaging", "queue", "management"],
+      "color": "#b9814f"
+    },
+    {
+      "image": "apache/kafka:latest",
+      "name": "Apache Kafka",
+      "category": "Messaging",
+      "description": "Distributed event streaming platform for modern data pipelines.",
+      "tags": ["messaging", "streaming", "event-driven"],
+      "color": "#466579"
+    },
+    {
+      "image": "nats:latest",
+      "name": "NATS",
+      "category": "Messaging",
+      "description": "High-performance messaging system for cloud-native applications.",
+      "tags": ["messaging", "pubsub", "lightweight"],
+      "color": "#499690"
+    },
+    {
+      "image": "grafana/grafana:latest",
+      "name": "Grafana",
+      "category": "Observability",
+      "description": "Visualization platform for metrics, logs, and traces.",
+      "tags": ["observability", "metrics", "dashboard"],
+      "color": "#d48b48"
+    },
+    {
+      "image": "prom/prometheus:latest",
+      "name": "Prometheus",
+      "category": "Observability",
+      "description": "Monitoring system and time-series database.",
+      "tags": ["observability", "metrics", "monitoring"],
+      "color": "#d78246"
+    },
+    {
+      "image": "louislam/uptime-kuma:1",
+      "name": "Uptime Kuma",
+      "category": "Observability",
+      "description": "Self-hosted monitoring tool for websites and services.",
+      "tags": ["observability", "monitoring", "status"],
+      "color": "#52ad75"
+    },
+    {
+      "image": "jaegertracing/all-in-one:latest",
+      "name": "Jaeger",
+      "category": "Observability",
+      "description": "End-to-end distributed tracing system.",
+      "tags": ["observability", "tracing", "telemetry"],
+      "color": "#5da8b8"
+    },
+    {
+      "image": "minio/minio:latest",
+      "name": "MinIO",
+      "category": "Storage",
+      "description": "High-performance S3-compatible object storage server.",
+      "tags": ["storage", "s3", "object-store"],
+      "color": "#ad4b53"
+    },
+    {
+      "image": "nextcloud:stable-alpine",
+      "name": "Nextcloud",
+      "category": "Storage",
+      "description": "Self-hosted productivity platform for files, calendars, and chat.",
+      "tags": ["storage", "cloud", "collaboration"],
+      "color": "#4682b4"
+    },
+    {
+      "image": "ollama/ollama:latest",
+      "name": "Ollama",
+      "category": "AI",
+      "description": "Get up and running with large language models locally.",
+      "tags": ["ai", "llm", "local"],
+      "color": "#434343"
+    },
+    {
+      "image": "qdrant/qdrant:latest",
+      "name": "Qdrant",
+      "category": "AI",
+      "description": "Vector search engine and vector database for AI applications.",
+      "tags": ["ai", "vector", "search"],
+      "color": "#b35777"
+    },
+    {
+      "image": "getmeili/meilisearch:v1.12",
+      "name": "Meilisearch",
+      "category": "Search",
+      "description": "Lightning-fast, hyper-relevant search engine.",
+      "tags": ["search", "fast", "rest-api"],
+      "color": "#ad4983"
+    },
+    {
+      "image": "portainer/portainer-ce:latest",
+      "name": "Portainer CE",
+      "category": "Management",
+      "description": "Lightweight management UI for Docker environments.",
+      "tags": ["management", "docker", "ui"],
+      "color": "#4d90cd"
+    },
+    {
+      "image": "vaultwarden/server:latest",
+      "name": "Vaultwarden",
+      "category": "Security",
+      "description": "Lightweight Bitwarden-compatible password manager server.",
+      "tags": ["security", "passwords", "self-hosted"],
+      "color": "#417dc4"
+    },
+    {
+      "image": "hashicorp/vault:latest",
+      "name": "HashiCorp Vault",
+      "category": "Security",
+      "description": "Manage secrets and protect sensitive data across systems.",
+      "tags": ["security", "secrets", "vault"],
+      "color": "#5b5e6b"
+    },
+    {
+      "image": "jenkins/jenkins:lts-jdk21",
+      "name": "Jenkins",
+      "category": "CI/CD",
+      "description": "Extensible open-source automation server for CI/CD pipelines.",
+      "tags": ["cicd", "automation", "build"],
+      "color": "#ba5d4d"
+    },
+    {
+      "image": "gitlab/gitlab-runner:latest",
+      "name": "GitLab Runner",
+      "category": "CI/CD",
+      "description": "Lightweight build agent for executing GitLab CI/CD jobs.",
+      "tags": ["cicd", "gitlab", "runner"],
+      "color": "#c46a3b"
+    },
+    {
+      "image": "localstack/localstack:latest",
+      "name": "LocalStack",
+      "category": "DevTools",
+      "description": "Fully functional local AWS cloud stack emulator.",
+      "tags": ["devtools", "aws", "testing"],
+      "color": "#a86d3d"
+    }
+  ]
+}
