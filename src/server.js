@@ -154,6 +154,140 @@ function dockerRequest(method, endpoint, body) {
   });
 }
 
+function websocketFrame(opcode, payload = Buffer.alloc(0)) {
+  const data = Buffer.isBuffer(payload) ? payload : Buffer.from(payload);
+  let header;
+  if (data.length < 126) {
+    header = Buffer.from([0x80 | opcode, data.length]);
+  } else if (data.length <= 0xffff) {
+    header = Buffer.alloc(4);
+    header[0] = 0x80 | opcode;
+    header[1] = 126;
+    header.writeUInt16BE(data.length, 2);
+  } else {
+    header = Buffer.alloc(10);
+    header[0] = 0x80 | opcode;
+    header[1] = 127;
+    header.writeBigUInt64BE(BigInt(data.length), 2);
+  }
+  return Buffer.concat([header, data]);
+}
+
+function attachDockerShell(containerId, shell, browserSocket, browserHead) {
+  let closed = false;
+  let dockerSocket;
+  let frameBuffer = Buffer.alloc(0);
+  const sendText = (text) => {
+    if (!closed && !browserSocket.destroyed) browserSocket.write(websocketFrame(1, text));
+  };
+  const close = () => {
+    if (closed) return;
+    closed = true;
+    dockerSocket?.destroy();
+    if (!browserSocket.destroyed) browserSocket.end(websocketFrame(8));
+  };
+
+  const processBrowserFrames = (chunk) => {
+    frameBuffer = Buffer.concat([frameBuffer, chunk]);
+    while (frameBuffer.length >= 2) {
+      const first = frameBuffer[0];
+      const second = frameBuffer[1];
+      const opcode = first & 0x0f;
+      const masked = (second & 0x80) !== 0;
+      let length = second & 0x7f;
+      let offset = 2;
+      if (length === 126) {
+        if (frameBuffer.length < 4) return;
+        length = frameBuffer.readUInt16BE(2);
+        offset = 4;
+      } else if (length === 127) {
+        if (frameBuffer.length < 10) return;
+        const largeLength = frameBuffer.readBigUInt64BE(2);
+        if (largeLength > 1024n * 1024n) return close();
+        length = Number(largeLength);
+        offset = 10;
+      }
+      if (!masked || length > 1024 * 1024) return close();
+      if (frameBuffer.length < offset + 4 + length) return;
+      const mask = frameBuffer.subarray(offset, offset + 4);
+      offset += 4;
+      const payload = Buffer.from(frameBuffer.subarray(offset, offset + length));
+      frameBuffer = frameBuffer.subarray(offset + length);
+      for (let index = 0; index < payload.length; index += 1) payload[index] ^= mask[index % 4];
+      if (opcode === 8) return close();
+      if (opcode === 9) {
+        browserSocket.write(websocketFrame(10, payload));
+        continue;
+      }
+      if ((opcode === 1 || opcode === 2) && dockerSocket && !dockerSocket.destroyed) dockerSocket.write(payload);
+    }
+  };
+
+  browserSocket.on('data', processBrowserFrames);
+  browserSocket.on('error', close);
+  browserSocket.on('close', () => {
+    closed = true;
+    dockerSocket?.destroy();
+  });
+  if (browserHead?.length) processBrowserFrames(browserHead);
+
+  (async () => {
+    try {
+      const exec = await dockerRequest('POST', `/containers/${dockerId(containerId)}/exec`, {
+        AttachStdin: true,
+        AttachStdout: true,
+        AttachStderr: true,
+        Tty: true,
+        Cmd: [shell],
+      });
+      if (closed) return;
+      const request = http.request({
+        socketPath: SOCKET_PATH,
+        path: `/${API_VERSION}/exec/${dockerId(exec.Id)}/start`,
+        method: 'POST',
+        headers: {
+          connection: 'Upgrade',
+          upgrade: 'tcp',
+          'content-type': 'application/json',
+        },
+      });
+      request.on('upgrade', (dockerResponse, socket, head) => {
+        dockerSocket = socket;
+        socket.on('data', (data) => {
+          if (!closed && !browserSocket.destroyed) browserSocket.write(websocketFrame(2, data));
+        });
+        socket.on('error', (error) => { sendText(`\r\n[dockyard] Docker exec disconnected: ${error.message}\r\n`); close(); });
+        socket.on('close', () => {
+          if (!closed) {
+            sendText('\r\n[dockyard] Shell session ended. Close this panel to exit.\r\n');
+            close();
+          }
+        });
+        if (head?.length) socket.unshift(head);
+        sendText(`Connected to ${shell} in container ${containerId.slice(0, 12)}.\r\n`);
+      });
+      request.on('response', (dockerResponse) => {
+        const chunks = [];
+        dockerResponse.on('data', (chunk) => chunks.push(chunk));
+        dockerResponse.on('end', () => {
+          const message = Buffer.concat(chunks).toString('utf8');
+          sendText(`\r\n[dockyard] ${message || `Docker rejected exec (${dockerResponse.statusCode}).`}\r\n`);
+          close();
+        });
+      });
+      request.on('error', (error) => {
+        sendText(`\r\n[dockyard] Could not attach shell: ${error.message}\r\n`);
+        close();
+      });
+      request.write(JSON.stringify({ Detach: false, Tty: true }));
+      request.end();
+    } catch (error) {
+      sendText(`\r\n[dockyard] ${error.message}\r\n`);
+      close();
+    }
+  })();
+}
+
 function streamDockerPull(image, tag, response) {
   return new Promise((resolve, reject) => {
     const request = http.request({
@@ -329,10 +463,33 @@ async function handleApi(request, response, url) {
     return sendJson(response, 200, await dockerRequest('POST', endpoint));
   }
 
+  match = pathname.match(/^\/api\/containers\/([^/]+)\/update$/);
+  if (method === 'POST' && match) {
+    const id = dockerId(decodeURIComponent(match[1]));
+    const requested = await readJson(request);
+    const update = {};
+    for (const key of ['Memory', 'NanoCpus', 'CpuShares', 'PidsLimit']) {
+      if (requested[key] !== undefined) {
+        const value = Number(requested[key]);
+        if (!Number.isFinite(value) || value < 0) throw Object.assign(new Error(`Invalid ${key} value`), { statusCode: 400 });
+        update[key] = value;
+      }
+    }
+    if (requested.RestartPolicy !== undefined) {
+      const name = requested.RestartPolicy?.Name;
+      if (!['no', 'always', 'unless-stopped', 'on-failure'].includes(name)) throw Object.assign(new Error('Invalid restart policy'), { statusCode: 400 });
+      update.RestartPolicy = { Name: name };
+      const maximumRetryCount = Number(requested.RestartPolicy.MaximumRetryCount || 0);
+      if (name === 'on-failure' && maximumRetryCount > 0) update.RestartPolicy.MaximumRetryCount = maximumRetryCount;
+    }
+    if (!Object.keys(update).length) throw Object.assign(new Error('Choose at least one setting to update'), { statusCode: 400 });
+    return sendJson(response, 200, await dockerRequest('POST', `/containers/${id}/update`, update));
+  }
+
   if (method === 'POST' && pathname === '/api/containers/create') {
     const body = await readJson(request);
     if (!body.Image) throw Object.assign(new Error('Choose an image before creating a container'), { statusCode: 400 });
-    const name = body.name;
+    const name = body.name || searchParams.get('name');
     const autoStart = body.autoStart === true;
     delete body.name;
     delete body.autoStart;
@@ -455,6 +612,41 @@ const server = http.createServer(async (request, response) => {
     const status = error.statusCode || (error.code === 'EACCES' || error.code === 'ENOENT' ? 503 : 500);
     sendJson(response, status, { message: error.message || 'Unexpected server error' });
   }
+});
+
+server.on('upgrade', (request, socket, head) => {
+  const url = new URL(request.url, `http://${request.headers.host || 'localhost'}`);
+  const match = url.pathname.match(/^\/api\/containers\/([^/]+)\/shell$/);
+  const origin = request.headers.origin;
+  if (!match || !origin || new URL(origin).host !== request.headers.host) {
+    socket.end('HTTP/1.1 403 Forbidden\r\nConnection: close\r\n\r\n');
+    return;
+  }
+  if (!getSession(request)) {
+    socket.end('HTTP/1.1 401 Unauthorized\r\nConnection: close\r\n\r\n');
+    return;
+  }
+  const websocketKey = request.headers['sec-websocket-key'];
+  if (!websocketKey || request.headers.upgrade?.toLowerCase() !== 'websocket') {
+    socket.end('HTTP/1.1 400 Bad Request\r\nConnection: close\r\n\r\n');
+    return;
+  }
+  const shellChoice = url.searchParams.get('shell') || 'sh';
+  const shells = { sh: '/bin/sh', bash: '/bin/bash', ash: '/bin/ash' };
+  const shell = shells[shellChoice];
+  if (!shell) {
+    socket.end('HTTP/1.1 400 Bad Request\r\nConnection: close\r\n\r\n');
+    return;
+  }
+  const accept = crypto.createHash('sha1').update(`${websocketKey}258EAFA5-E914-47DA-95CA-C5AB0DC85B11`).digest('base64');
+  socket.write([
+    'HTTP/1.1 101 Switching Protocols',
+    'Upgrade: websocket',
+    'Connection: Upgrade',
+    `Sec-WebSocket-Accept: ${accept}`,
+    '\r\n',
+  ].join('\r\n'));
+  attachDockerShell(decodeURIComponent(match[1]), shell, socket, head);
 });
 
 server.listen(PORT, HOST, () => {

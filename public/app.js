@@ -18,6 +18,9 @@ const state = {
   events: [],
   monitorTimer: null,
   monitorSort: 'cpu',
+  shellSocket: null,
+  shellHistory: [],
+  shellHistoryIndex: 0,
   paletteIndex: 0,
   currentPage: 'overview',
   sort: { key: 'created', descending: true },
@@ -64,6 +67,14 @@ function formatBytes(bytes) {
   let index = 0;
   while (value >= 1024 && index < units.length - 1) { value /= 1024; index += 1; }
   return `${value.toFixed(index > 1 ? 1 : 0)} ${units[index]}`;
+}
+
+function downloadFile(filename, content, contentType = 'text/plain') {
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(new Blob([content], { type: contentType }));
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(link.href);
 }
 
 function timeAgo(timestamp) {
@@ -214,7 +225,7 @@ function containerActions(container) {
     : running
       ? `<button class="row-action" data-resource-action="stop" data-id="${id}" title="Stop" aria-label="Stop">■</button>`
       : `<button class="row-action" data-resource-action="start" data-id="${id}" title="Start" aria-label="Start">▶</button>`;
-  return `<div class="row-actions">${primary}${running ? `<button class="row-action" data-resource-action="${paused ? 'unpause' : 'pause'}" data-id="${id}" title="${paused ? 'Resume' : 'Pause'}" aria-label="${paused ? 'Resume' : 'Pause'}">${paused ? '▶' : 'Ⅱ'}</button>` : ''}<button class="row-action" data-resource-action="restart" data-id="${id}" title="Restart" aria-label="Restart">↻</button><details class="row-menu"><summary class="row-action" title="More actions" aria-label="More actions">•••</summary><div class="row-menu-items"><button data-resource-action="logs" data-id="${id}">View logs</button><button data-resource-action="stats" data-id="${id}">Resource stats</button><button data-resource-action="inspect" data-id="${id}">Inspect</button><button data-resource-action="duplicate" data-id="${id}">Duplicate</button><button data-resource-action="kill" data-id="${id}">Kill</button><button data-resource-action="rename" data-id="${id}">Rename</button><button class="danger" data-resource-action="remove" data-id="${id}">Remove</button></div></details></div>`;
+  return `<div class="row-actions">${primary}${running && !paused ? `<button class="row-action" data-resource-action="pause" data-id="${id}" title="Pause" aria-label="Pause">Ⅱ</button>` : ''}${running ? `<button class="row-action" data-resource-action="shell" data-id="${id}" title="Open shell" aria-label="Open shell">›_</button>` : ''}<button class="row-action" data-resource-action="restart" data-id="${id}" title="Restart" aria-label="Restart">↻</button><details class="row-menu"><summary class="row-action" title="More actions" aria-label="More actions">•••</summary><div class="row-menu-items"><button data-resource-action="shell" data-id="${id}" ${running ? '' : 'disabled'}>Open terminal</button><button data-resource-action="logs" data-id="${id}">View logs</button><button data-resource-action="stats" data-id="${id}">Resource stats</button><button data-resource-action="limits" data-id="${id}">Update limits</button><button data-resource-action="inspect" data-id="${id}">Inspect</button><button data-resource-action="copy-config" data-id="${id}">Download config</button><button data-resource-action="copy-id" data-id="${id}">Copy container ID</button><button data-resource-action="duplicate" data-id="${id}">Duplicate</button><button data-resource-action="kill" data-id="${id}" ${running ? '' : 'disabled'}>Kill</button><button data-resource-action="rename" data-id="${id}">Rename</button><button class="danger" data-resource-action="remove" data-id="${id}">Remove</button></div></details></div>`;
 }
 
 function renderContainers() {
@@ -918,6 +929,10 @@ function closeModal() {
   $('#modal-layer').classList.add('hidden');
   if (state.logRefreshInterval) window.clearInterval(state.logRefreshInterval);
   state.logRefreshInterval = null;
+  if (state.shellSocket) {
+    state.shellSocket.close(1000, 'Terminal closed');
+    state.shellSocket = null;
+  }
 }
 function field(label, name, options = {}) {
   const type = options.type || 'text';
@@ -927,7 +942,7 @@ function field(label, name, options = {}) {
   const optional = options.optional ? '<span class="optional">Optional</span>' : '';
   const hint = options.hint ? `<span class="form-hint">${escapeHtml(options.hint)}</span>` : '';
   const control = options.select
-    ? `<select id="field-${name}" name="${name}">${options.select.map(([value, text]) => `<option value="${escapeHtml(value)}">${escapeHtml(text)}</option>`).join('')}</select>`
+    ? `<select id="field-${name}" name="${name}">${options.select.map(([value, text]) => `<option value="${escapeHtml(value)}" ${String(value) === String(options.value || '') ? 'selected' : ''}>${escapeHtml(text)}</option>`).join('')}</select>`
     : options.textarea
       ? `<textarea id="field-${name}" name="${name}"${placeholder}></textarea>`
       : `<input id="field-${name}" name="${name}" type="${type}"${placeholder}${value}${required}${options.step ? ` step="${options.step}"` : ''}>`;
@@ -1189,6 +1204,39 @@ async function containerAction(action, id) {
   const container = state.containers.find((item) => item.Id === id);
   if (!container) return;
   const name = resourceName(container);
+  if (action === 'copy-id') {
+    try { await navigator.clipboard.writeText(id); toast('Container ID copied'); }
+    catch { openOutput(`${name} · Container ID`, 'CONTAINER IDENTIFIER', id); }
+    return;
+  }
+  if (action === 'shell') {
+    openContainerShell(name, id);
+    return;
+  }
+  if (action === 'limits') {
+    openContainerLimits(container);
+    return;
+  }
+  if (action === 'copy-config') {
+    try {
+      const details = await api(`/api/containers/${encodeURIComponent(id)}/inspect`);
+      const config = {
+        name,
+        image: details.Config?.Image,
+        command: details.Config?.Cmd,
+        entrypoint: details.Config?.Entrypoint,
+        environment: details.Config?.Env,
+        ports: details.Config?.ExposedPorts,
+        mounts: details.Mounts?.map((mount) => ({ source: mount.Name || mount.Source, destination: mount.Destination, mode: mount.Mode })),
+        restartPolicy: details.HostConfig?.RestartPolicy,
+        networkMode: details.HostConfig?.NetworkMode,
+        labels: details.Config?.Labels,
+      };
+      downloadFile(`${name}-config.json`, JSON.stringify(config, null, 2), 'application/json');
+      toast('Container config downloaded');
+    } catch (error) { toast(error.message, 'error'); }
+    return;
+  }
   if (action === 'duplicate') {
     openCreateContainer(containerImage(container));
     return;
@@ -1234,6 +1282,97 @@ async function containerAction(action, id) {
     toast(`${name}: ${action === 'unpause' ? 'resumed' : `${action}ed`}`);
     await refreshAll();
   } catch (error) { toast(error.message, 'error'); }
+}
+
+async function openContainerLimits(container) {
+  const id = container.Id;
+  const details = await api(`/api/containers/${encodeURIComponent(id)}/inspect`).catch((error) => {
+    toast(error.message, 'error');
+    return null;
+  });
+  if (!details) return;
+  const host = details.HostConfig || {};
+  const memoryMiB = host.Memory ? Math.round(host.Memory / 1024 / 1024) : '';
+  const cpus = host.NanoCpus ? (host.NanoCpus / 1e9).toString() : '';
+  const restart = host.RestartPolicy?.Name || 'no';
+  openModal({
+    title: `Update ${resourceName(container)}`, eyebrow: 'RESOURCE & RESTART POLICY', submit: 'Apply settings',
+    content: `<p class="modal-description">Update container limits and restart behavior. Leave resource fields blank to keep their current values.</p><div class="form-grid">${field('Memory limit (MiB)', 'memory', { type: 'number', placeholder: 'Unlimited', value: memoryMiB, optional: true })}${field('CPU limit', 'cpus', { type: 'number', step: '0.1', placeholder: 'Unlimited', value: cpus, optional: true })}${field('PID limit', 'pids', { type: 'number', placeholder: 'No limit', value: host.PidsLimit > 0 ? String(host.PidsLimit) : '', optional: true })}${field('Restart policy', 'restart', { select: [['no', 'No'], ['unless-stopped', 'Unless stopped'], ['always', 'Always'], ['on-failure', 'On failure']], value: restart })}${field('CPU shares', 'shares', { type: 'number', placeholder: 'Default', value: host.CpuShares ? String(host.CpuShares) : '', optional: true })}</div>`,
+    onSubmit: async () => {
+      const values = formValues();
+      const update = { RestartPolicy: { Name: values.restart } };
+      if (values.memory) update.Memory = Number(values.memory) * 1024 * 1024;
+      if (values.cpus) update.NanoCpus = Math.round(Number(values.cpus) * 1e9);
+      if (values.pids) update.PidsLimit = Number(values.pids);
+      if (values.shares) update.CpuShares = Number(values.shares);
+      await api(`/api/containers/${encodeURIComponent(id)}/update`, { method: 'POST', body: JSON.stringify(update) });
+      closeModal();
+      toast('Container settings updated');
+      await refreshAll();
+    },
+  });
+}
+
+function openContainerShell(name, id) {
+  openModal({
+    title: `${name} · Terminal`, eyebrow: 'INTERACTIVE DOCKER EXEC', submit: 'Close terminal',
+    content: `<div class="shell-toolbar"><span class="shell-live-indicator"><i></i> ATTACHED</span><label for="shell-choice">Shell</label><select id="shell-choice"><option value="sh">/bin/sh</option><option value="bash">/bin/bash</option><option value="ash">/bin/ash</option></select><button class="button button-quiet" id="shell-clear">Clear</button></div><pre class="shell-output" id="shell-output" role="log" aria-live="polite">Connecting to ${escapeHtml(name)}…\n</pre><form class="shell-input-row" id="shell-form"><span class="shell-prompt">$</span><input id="shell-input" type="text" autocomplete="off" spellcheck="false" aria-label="Terminal command" placeholder="Type a command and press Enter"><button class="button button-primary" type="submit">Send</button></form><p class="shell-hint">Enter runs a command · ↑/↓ command history · Ctrl+C sends interrupt</p>`,
+    onSubmit: closeModal,
+  });
+
+  const output = $('#shell-output');
+  const input = $('#shell-input');
+  const appendOutput = (text) => {
+    const safeText = String(text).replace(/\u001b\[[0-?]*[ -/]*[@-~]/g, '');
+    output.textContent += safeText;
+    output.scrollTop = output.scrollHeight;
+  };
+  const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const connectShell = (shell) => {
+    if (state.shellSocket) state.shellSocket.close(1000, 'Changing shell');
+    const socket = new WebSocket(`${protocol}//${location.host}/api/containers/${encodeURIComponent(id)}/shell?shell=${encodeURIComponent(shell)}`);
+    socket.binaryType = 'arraybuffer';
+    state.shellSocket = socket;
+    socket.addEventListener('open', () => { output.textContent = ''; input.focus(); });
+    socket.addEventListener('message', (event) => {
+      if (typeof event.data === 'string') appendOutput(event.data);
+      else appendOutput(new TextDecoder().decode(event.data));
+    });
+    socket.addEventListener('error', () => appendOutput('\r\n[dockyard] Terminal connection failed. Confirm that the container is running and includes the selected shell.\r\n'));
+    socket.addEventListener('close', (event) => {
+      if (event.reason !== 'Changing shell') appendOutput(`\r\n[dockyard] Terminal disconnected${event.reason ? `: ${event.reason}` : '.'}\r\n`);
+      if (state.shellSocket === socket) state.shellSocket = null;
+    });
+    return socket;
+  };
+  let socket = connectShell($('#shell-choice').value);
+  $('#shell-choice').addEventListener('change', (event) => { socket = connectShell(event.target.value); });
+  $('#shell-form').addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (socket.readyState !== WebSocket.OPEN) return toast('Terminal is not connected yet', 'error');
+    const command = input.value;
+    if (command.trim()) {
+      state.shellHistory.unshift(command);
+      state.shellHistory = state.shellHistory.slice(0, 50);
+      state.shellHistoryIndex = 0;
+    }
+    socket.send(`${command}\r`);
+    input.value = '';
+  });
+  input.addEventListener('keydown', (event) => {
+    if (event.ctrlKey && event.key.toLowerCase() === 'c') {
+      event.preventDefault();
+      if (socket.readyState === WebSocket.OPEN) socket.send('\u0003');
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      if (state.shellHistoryIndex < state.shellHistory.length) input.value = state.shellHistory[state.shellHistoryIndex++];
+    } else if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      state.shellHistoryIndex = Math.max(0, state.shellHistoryIndex - 1);
+      input.value = state.shellHistory[state.shellHistoryIndex] || '';
+    }
+  });
+  $('#shell-clear').addEventListener('click', () => { output.textContent = ''; input.focus(); });
 }
 
 async function openLogs(name, id) {
