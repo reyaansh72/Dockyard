@@ -38,11 +38,17 @@ const escapeHtml = (value = '') => String(value).replace(/[&<>"']/g, (char) => (
 
 async function api(path, options = {}) {
   const method = (options.method || 'GET').toUpperCase();
-  const response = await fetch(path, {
-    ...options,
-    credentials: 'same-origin',
-    headers: { ...(options.body ? { 'content-type': 'application/json' } : {}), ...options.headers },
-  });
+  let response;
+  try {
+    response = await fetch(path, {
+      ...options,
+      credentials: 'same-origin',
+      headers: { ...(options.body ? { 'content-type': 'application/json' } : {}), ...options.headers },
+    });
+  } catch (error) {
+    if (error.name === 'AbortError') throw error;
+    throw new Error('Cannot reach Dockyard. Check that the server is running, then reload the page.');
+  }
   const text = await response.text();
   let result = null;
   try { result = text ? JSON.parse(text) : null; } catch { result = text; }
@@ -968,9 +974,15 @@ function openCreateContainer(imageValue = '') {
           body.HostConfig.PortBindings[`${match[2]}/${protocol}`] = [{ HostPort: match[1] }];
         }
       }
-      const name = values.name ? `&name=${encodeURIComponent(values.name)}` : '';
-      await api(`/api/containers/create${name}`, { method: 'POST', body: JSON.stringify(body) });
-      closeModal(); toast(values.startNow ? 'Container created and started' : 'Container created'); await refreshAll(); setPage('containers');
+      const name = values.name ? `?name=${encodeURIComponent(values.name)}` : '';
+      const result = await api(`/api/containers/create${name}`, { method: 'POST', body: JSON.stringify(body) });
+      closeModal();
+      if (values.startNow && result.Started === false) {
+        toast(`Container ${result.Id?.slice(0, 12) || 'created'} created, but could not start: ${result.StartError || 'Docker did not start it.'}`, 'error');
+      } else {
+        toast(values.startNow ? 'Container created and started' : 'Container created');
+      }
+      await refreshAll(); setPage('containers');
     },
   });
   const networkOptions = [['', 'Default bridge'], ...state.networks.map((network) => [network.Name, network.Name])];

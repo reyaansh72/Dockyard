@@ -338,8 +338,13 @@ async function handleApi(request, response, url) {
     delete body.autoStart;
     const endpoint = `/containers/create${name ? `?name=${encodeURIComponent(name)}` : ''}`;
     const created = await dockerRequest('POST', endpoint, body);
-    if (autoStart) await dockerRequest('POST', `/containers/${dockerId(created.Id)}/start`);
-    return sendJson(response, 201, { ...created, Started: autoStart });
+    if (!autoStart) return sendJson(response, 201, { ...created, Started: false });
+    try {
+      await dockerRequest('POST', `/containers/${dockerId(created.Id)}/start`);
+      return sendJson(response, 201, { ...created, Started: true });
+    } catch (error) {
+      return sendJson(response, 201, { ...created, Started: false, StartError: error.message });
+    }
   }
 
   match = pathname.match(/^\/api\/images\/([^/]+)\/(remove|tag)$/);
