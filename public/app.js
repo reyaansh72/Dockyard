@@ -33,23 +33,7 @@ const themes = {
   coral: { label: 'Coral', accent: '#bd6251', strong: '#994b3d', soft: '#f8ece7', ink: '#7e4036' },
   marigold: { label: 'Marigold', accent: '#9a7528', strong: '#795b1d', soft: '#f6f0df', ink: '#604817' },
   plum: { label: 'Berry', accent: '#9d5876', strong: '#7c405b', soft: '#f6ebf0', ink: '#633449' },
-  lavender: { label: 'Lavender', accent: '#7966a8', strong: '#604d8c', soft: '#eeeaf7', ink: '#4d3e70' },
-  sky: { label: 'Sky', accent: '#4d86b3', strong: '#356c98', soft: '#e8f2f9', ink: '#2d5878' },
-  sage: { label: 'Sage', accent: '#718c70', strong: '#587258', soft: '#edf2eb', ink: '#455c45' },
-  mint: { label: 'Mint', accent: '#4f9884', strong: '#397965', soft: '#e6f3ef', ink: '#315f51' },
-  terracotta: { label: 'Terracotta', accent: '#b4674d', strong: '#944f3a', soft: '#f7ebe5', ink: '#713d30' },
-  rose: { label: 'Rose', accent: '#ad6579', strong: '#8f4c61', soft: '#f7eaee', ink: '#6f394b' },
-  indigo: { label: 'Indigo', accent: '#5269a3', strong: '#3d5187', soft: '#e9edf8', ink: '#34466f' },
-  teal: { label: 'Teal', accent: '#3d8b8b', strong: '#2d7070', soft: '#e5f2f2', ink: '#285858' },
-  mocha: { label: 'Mocha', accent: '#876b5a', strong: '#6d5345', soft: '#f1ece8', ink: '#554136' },
-  slate: { label: 'Slate', accent: '#647587', strong: '#4d5d6d', soft: '#edf0f3', ink: '#3e4b58' },
-  charcoal: { label: 'Charcoal', accent: '#59605f', strong: '#414746', soft: '#eceeed', ink: '#343938' },
-  olive: { label: 'Olive', accent: '#7d813f', strong: '#62662f', soft: '#f0f1e5', ink: '#4d5027' },
-  apricot: { label: 'Apricot', accent: '#c17a4d', strong: '#a05e37', soft: '#f8eee6', ink: '#75452c' },
-  eucalyptus: { label: 'Eucalyptus', accent: '#508575', strong: '#3b6b5d', soft: '#e8f1ee', ink: '#31554a' },
-  midnight: { label: 'Midnight', accent: '#485b78', strong: '#34445e', soft: '#e8ecf2', ink: '#29364b' },
-  denim: { label: 'Denim', accent: '#4b7199', strong: '#375979', soft: '#e8eff5', ink: '#2c4862' }
-};
+}
 
 const $ = (selector, parent = document) => parent.querySelector(selector);
 const $$ = (selector, parent = document) => [...parent.querySelectorAll(selector)];
