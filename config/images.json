@@ -27,6 +27,30 @@
       "color": "#bc7953"
     },
     {
+      "image": "haproxy:3.0-alpine",
+      "name": "HAProxy",
+      "category": "Networking",
+      "description": "Reliable, high-performance TCP/HTTP load balancer.",
+      "tags": ["networking", "proxy", "loadbalancer"],
+      "color": "#3f84af"
+    },
+    {
+      "image": "traefik:v3.3",
+      "name": "Traefik",
+      "category": "Networking",
+      "description": "Cloud-native edge router, load balancer, and reverse proxy.",
+      "tags": ["networking", "proxy", "routing"],
+      "color": "#50a48a"
+    },
+    {
+      "image": "jc21/nginx-proxy-manager:latest",
+      "name": "Nginx Proxy Manager",
+      "category": "Networking",
+      "description": "Web UI for managing reverse proxies with SSL automation.",
+      "tags": ["networking", "proxy", "ui"],
+      "color": "#48956c"
+    },
+    {
       "image": "postgres:16-alpine",
       "name": "PostgreSQL",
       "category": "Database",
@@ -73,6 +97,46 @@
       "description": "Column-oriented DBMS for real-time analytical reporting.",
       "tags": ["database", "analytics", "sql"],
       "color": "#cc9a3b"
+    },
+    {
+      "image": "mcr.microsoft.com/mssql/server:2022-latest",
+      "name": "Microsoft SQL Server",
+      "category": "Database",
+      "description": "Microsoft relational database server for enterprise workloads.",
+      "tags": ["database", "sql", "microsoft"],
+      "color": "#4d83a8"
+    },
+    {
+      "image": "cassandra:5",
+      "name": "Apache Cassandra",
+      "category": "Database",
+      "description": "Distributed NoSQL database designed for high availability.",
+      "tags": ["database", "nosql", "distributed"],
+      "color": "#557f9d"
+    },
+    {
+      "image": "neo4j:5",
+      "name": "Neo4j",
+      "category": "Database",
+      "description": "Graph database for connected data and relationship-heavy applications.",
+      "tags": ["database", "graph", "nosql"],
+      "color": "#4b9b83"
+    },
+    {
+      "image": "influxdb:2",
+      "name": "InfluxDB",
+      "category": "Database",
+      "description": "Time-series database designed for metrics and event data.",
+      "tags": ["database", "timeseries", "metrics"],
+      "color": "#567db5"
+    },
+    {
+      "image": "valkey/valkey:8-alpine",
+      "name": "Valkey",
+      "category": "Database",
+      "description": "Open-source in-memory data store compatible with Redis APIs.",
+      "tags": ["database", "cache", "memory"],
+      "color": "#756ca8"
     },
     {
       "image": "node:22-alpine",
@@ -155,28 +219,36 @@
       "color": "#a34b5c"
     },
     {
-      "image": "traefik:v3.3",
-      "name": "Traefik",
-      "category": "Networking",
-      "description": "Cloud-native edge router, load balancer, and reverse proxy.",
-      "tags": ["networking", "proxy", "routing"],
-      "color": "#50a48a"
+      "image": "fedora:latest",
+      "name": "Fedora",
+      "category": "Base",
+      "description": "Modern Linux distribution with current packages and tooling.",
+      "tags": ["base", "linux"],
+      "color": "#4b79ad"
     },
     {
-      "image": "haproxy:3.0-alpine",
-      "name": "HAProxy",
-      "category": "Networking",
-      "description": "Reliable, high-performance TCP/HTTP load balancer.",
-      "tags": ["networking", "proxy", "loadbalancer"],
-      "color": "#3f84af"
+      "image": "rockylinux:9",
+      "name": "Rocky Linux",
+      "category": "Base",
+      "description": "Enterprise-focused Linux distribution compatible with RHEL.",
+      "tags": ["base", "linux", "enterprise"],
+      "color": "#4d8a75"
     },
     {
-      "image": "jc21/nginx-proxy-manager:latest",
-      "name": "Nginx Proxy Manager",
-      "category": "Networking",
-      "description": "Web UI for managing reverse proxies with SSL automation.",
-      "tags": ["networking", "proxy", "ui"],
-      "color": "#48956c"
+      "image": "archlinux:latest",
+      "name": "Arch Linux",
+      "category": "Base",
+      "description": "Minimal rolling-release Linux environment.",
+      "tags": ["base", "linux", "rolling"],
+      "color": "#4d82a8"
+    },
+    {
+      "image": "busybox:latest",
+      "name": "BusyBox",
+      "category": "Base",
+      "description": "Tiny Unix utilities collection for minimal containers.",
+      "tags": ["base", "linux", "minimal"],
+      "color": "#777777"
     },
     {
       "image": "rabbitmq:4-management-alpine",
@@ -201,6 +273,14 @@
       "description": "High-performance messaging system for cloud-native applications.",
       "tags": ["messaging", "pubsub", "lightweight"],
       "color": "#499690"
+    },
+    {
+      "image": "eclipse-mosquitto:2",
+      "name": "Mosquitto",
+      "category": "Messaging",
+      "description": "Lightweight MQTT message broker for IoT applications.",
+      "tags": ["messaging", "mqtt", "iot"],
+      "color": "#526d85"
     },
     {
       "image": "grafana/grafana:latest",
@@ -235,6 +315,22 @@
       "color": "#5da8b8"
     },
     {
+      "image": "prom/node-exporter:latest",
+      "name": "Node Exporter",
+      "category": "Observability",
+      "description": "Exports hardware and operating system metrics for Prometheus.",
+      "tags": ["observability", "metrics", "linux"],
+      "color": "#7b7f91"
+    },
+    {
+      "image": "netdata/netdata:latest",
+      "name": "Netdata",
+      "category": "Observability",
+      "description": "Real-time infrastructure monitoring and performance dashboard.",
+      "tags": ["observability", "monitoring", "dashboard"],
+      "color": "#5c9b76"
+    },
+    {
       "image": "minio/minio:latest",
       "name": "MinIO",
       "category": "Storage",
@@ -249,6 +345,22 @@
       "description": "Self-hosted productivity platform for files, calendars, and chat.",
       "tags": ["storage", "cloud", "collaboration"],
       "color": "#4682b4"
+    },
+    {
+      "image": "filebrowser/filebrowser:latest",
+      "name": "File Browser",
+      "category": "Storage",
+      "description": "Web-based file manager for files on a server.",
+      "tags": ["storage", "files", "web"],
+      "color": "#4f8f73"
+    },
+    {
+      "image": "owncloud/server:latest",
+      "name": "ownCloud",
+      "category": "Storage",
+      "description": "Self-hosted file synchronization and collaboration platform.",
+      "tags": ["storage", "cloud", "files"],
+      "color": "#4e86aa"
     },
     {
       "image": "ollama/ollama:latest",
@@ -267,6 +379,22 @@
       "color": "#b35777"
     },
     {
+      "image": "chromadb/chroma:latest",
+      "name": "Chroma",
+      "category": "AI",
+      "description": "Open-source embedding database for AI applications.",
+      "tags": ["ai", "vector", "embeddings"],
+      "color": "#7a63a1"
+    },
+    {
+      "image": "jupyter/scipy-notebook:latest",
+      "name": "Jupyter SciPy",
+      "category": "AI",
+      "description": "Interactive Python environment for scientific computing and data science.",
+      "tags": ["ai", "python", "data-science"],
+      "color": "#b8754a"
+    },
+    {
       "image": "getmeili/meilisearch:v1.12",
       "name": "Meilisearch",
       "category": "Search",
@@ -275,12 +403,44 @@
       "color": "#ad4983"
     },
     {
+      "image": "opensearchproject/opensearch:2",
+      "name": "OpenSearch",
+      "category": "Search",
+      "description": "Open-source search and analytics engine.",
+      "tags": ["search", "analytics", "indexing"],
+      "color": "#4d8e91"
+    },
+    {
+      "image": "opensearchproject/opensearch-dashboards:2",
+      "name": "OpenSearch Dashboards",
+      "category": "Search",
+      "description": "Visualization and management interface for OpenSearch.",
+      "tags": ["search", "dashboard", "analytics"],
+      "color": "#527d91"
+    },
+    {
       "image": "portainer/portainer-ce:latest",
       "name": "Portainer CE",
       "category": "Management",
       "description": "Lightweight management UI for Docker environments.",
       "tags": ["management", "docker", "ui"],
       "color": "#4d90cd"
+    },
+    {
+      "image": "dockurr/webtop:latest",
+      "name": "Webtop",
+      "category": "Management",
+      "description": "Containerized Linux desktop accessible through a web browser.",
+      "tags": ["management", "desktop", "web"],
+      "color": "#6379a5"
+    },
+    {
+      "image": "linuxserver/openssh-server:latest",
+      "name": "OpenSSH Server",
+      "category": "Networking",
+      "description": "Containerized OpenSSH server for remote administration.",
+      "tags": ["networking", "ssh", "remote"],
+      "color": "#596d72"
     },
     {
       "image": "vaultwarden/server:latest",
@@ -299,6 +459,14 @@
       "color": "#5b5e6b"
     },
     {
+      "image": "authelia/authelia:latest",
+      "name": "Authelia",
+      "category": "Security",
+      "description": "Open-source authentication and authorization server.",
+      "tags": ["security", "authentication", "sso"],
+      "color": "#4e8a78"
+    },
+    {
       "image": "jenkins/jenkins:lts-jdk21",
       "name": "Jenkins",
       "category": "CI/CD",
@@ -315,12 +483,428 @@
       "color": "#c46a3b"
     },
     {
+      "image": "gitea/gitea:latest",
+      "name": "Gitea",
+      "category": "DevTools",
+      "description": "Lightweight self-hosted Git service.",
+      "tags": ["devtools", "git", "self-hosted"],
+      "color": "#60946e"
+    },
+    {
+      "image": "forgejo/forgejo:latest",
+      "name": "Forgejo",
+      "category": "DevTools",
+      "description": "Community-driven lightweight Git hosting platform.",
+      "tags": ["devtools", "git", "self-hosted"],
+      "color": "#8b6178"
+    },
+    {
+      "image": "codeberg.org/forgejo/forgejo:latest",
+      "name": "Forgejo Codeberg",
+      "category": "DevTools",
+      "description": "Forgejo image hosted through the Codeberg registry.",
+      "tags": ["devtools", "git", "forgejo"],
+      "color": "#5c6e8d"
+    },
+    {
       "image": "localstack/localstack:latest",
       "name": "LocalStack",
       "category": "DevTools",
       "description": "Fully functional local AWS cloud stack emulator.",
       "tags": ["devtools", "aws", "testing"],
       "color": "#a86d3d"
+    },
+    {
+      "image": "dind:latest",
+      "name": "Docker-in-Docker",
+      "category": "DevTools",
+      "description": "Docker daemon environment commonly used for CI and container testing.",
+      "tags": ["devtools", "docker", "testing"],
+      "color": "#4f83b2"
+    },
+    {
+      "image": "wordpress:latest",
+      "name": "WordPress",
+      "category": "Web Apps",
+      "description": "Popular open-source content management system.",
+      "tags": ["web", "cms", "php"],
+      "color": "#4f7fa8"
+    },
+    {
+      "image": "ghost:latest",
+      "name": "Ghost",
+      "category": "Web Apps",
+      "description": "Modern publishing platform for blogs and websites.",
+      "tags": ["web", "cms", "blog"],
+      "color": "#5d6470"
+    },
+    {
+      "image": "drupal:latest",
+      "name": "Drupal",
+      "category": "Web Apps",
+      "description": "Flexible open-source content management platform.",
+      "tags": ["web", "cms", "php"],
+      "color": "#4d82a1"
+    },
+    {
+      "image": "adminer:latest",
+      "name": "Adminer",
+      "category": "Management",
+      "description": "Lightweight web-based database administration tool.",
+      "tags": ["management", "database", "web"],
+      "color": "#617a91"
+    },
+    {
+      "image": "phpmyadmin:latest",
+      "name": "phpMyAdmin",
+      "category": "Management",
+      "description": "Web-based administration interface for MySQL and MariaDB.",
+      "tags": ["management", "database", "mysql"],
+      "color": "#5f77a1"
+    },
+    {
+      "image": "redis/redisinsight:latest",
+      "name": "Redis Insight",
+      "category": "Management",
+      "description": "Visual management and development tool for Redis and compatible databases.",
+      "tags": ["management", "redis", "database"],
+      "color": "#b75d58"
+    },
+    {
+      "image": "mailhog/mailhog:latest",
+      "name": "MailHog",
+      "category": "DevTools",
+      "description": "Development SMTP server with a web interface for testing email.",
+      "tags": ["devtools", "email", "testing"],
+      "color": "#7d6b58"
+    },
+    {
+      "image": "memcached:alpine",
+      "name": "Memcached",
+      "category": "Database",
+      "description": "High-performance distributed memory caching system.",
+      "tags": ["database", "cache", "memory"],
+      "color": "#687d87"
+    },
+    {
+      "image": "arangodb:latest",
+      "name": "ArangoDB",
+      "category": "Database",
+      "description": "Multi-model database supporting documents, graphs, and key-value data.",
+      "tags": ["database", "nosql", "graph"],
+      "color": "#5e8b6f"
+    },
+    {
+      "image": "couchdb:latest",
+      "name": "Apache CouchDB",
+      "category": "Database",
+      "description": "Document database built around HTTP and JSON.",
+      "tags": ["database", "nosql", "json"],
+      "color": "#4e8f72"
+    },
+    {
+      "image": "postgres:17-alpine",
+      "name": "PostgreSQL 17",
+      "category": "Database",
+      "description": "Current-generation PostgreSQL relational database image.",
+      "tags": ["database", "sql", "postgres"],
+      "color": "#557fac"
+    },
+    {
+      "image": "nginx:latest",
+      "name": "Nginx Latest",
+      "category": "Web",
+      "description": "Standard Nginx image for web serving and reverse proxy workloads.",
+      "tags": ["web", "proxy", "nginx"],
+      "color": "#4f9b76"
+    },
+    {
+      "image": "caddy:latest",
+      "name": "Caddy Latest",
+      "category": "Web",
+      "description": "Latest Caddy web server with automatic HTTPS support.",
+      "tags": ["web", "https", "proxy"],
+      "color": "#4d83b2"
+    },
+    {
+      "image": "tomcat:10-jdk21",
+      "name": "Apache Tomcat",
+      "category": "Web",
+      "description": "Java servlet container for Java web applications.",
+      "tags": ["web", "java", "servlet"],
+      "color": "#b8794c"
+    },
+    {
+      "image": "varnish:latest",
+      "name": "Varnish",
+      "category": "Networking",
+      "description": "HTTP accelerator and reverse caching proxy.",
+      "tags": ["networking", "cache", "proxy"],
+      "color": "#5a8c82"
+    },
+    {
+      "image": "squid:latest",
+      "name": "Squid",
+      "category": "Networking",
+      "description": "Caching proxy supporting HTTP and related protocols.",
+      "tags": ["networking", "proxy", "cache"],
+      "color": "#697d88"
+    },
+    {
+      "image": "wireguard:latest",
+      "name": "WireGuard",
+      "category": "Networking",
+      "description": "Modern VPN tunneling environment for secure networking.",
+      "tags": ["networking", "vpn", "security"],
+      "color": "#6b6d9e"
+    },
+    {
+      "image": "tailscale/tailscale:latest",
+      "name": "Tailscale",
+      "category": "Networking",
+      "description": "Secure mesh networking based on WireGuard.",
+      "tags": ["networking", "vpn", "mesh"],
+      "color": "#6b73a8"
+    },
+    {
+      "image": "technitium/dns-server:latest",
+      "name": "Technitium DNS Server",
+      "category": "Networking",
+      "description": "Self-hosted authoritative and recursive DNS server.",
+      "tags": ["networking", "dns", "server"],
+      "color": "#5c8098"
+    },
+    {
+      "image": "adguard/adguardhome:latest",
+      "name": "AdGuard Home",
+      "category": "Networking",
+      "description": "Network-wide DNS filtering and privacy server.",
+      "tags": ["networking", "dns", "privacy"],
+      "color": "#5a8d76"
+    },
+    {
+      "image": "pihole/pihole:latest",
+      "name": "Pi-hole",
+      "category": "Networking",
+      "description": "DNS-based network-wide filtering and local DNS service.",
+      "tags": ["networking", "dns", "privacy"],
+      "color": "#5e806d"
+    },
+    {
+      "image": "homeassistant/home-assistant:stable",
+      "name": "Home Assistant",
+      "category": "Home Lab",
+      "description": "Open-source home automation platform.",
+      "tags": ["homelab", "automation", "iot"],
+      "color": "#5b86a8"
+    },
+    {
+      "image": "itzg/minecraft-server:latest",
+      "name": "Minecraft Server",
+      "category": "Gaming",
+      "description": "Configurable Minecraft Java Edition server container.",
+      "tags": ["gaming", "minecraft", "server"],
+      "color": "#5b8c5c"
+    },
+    {
+      "image": "linuxserver/plex:latest",
+      "name": "Plex",
+      "category": "Media",
+      "description": "Media server for organizing and streaming personal media.",
+      "tags": ["media", "streaming", "server"],
+      "color": "#c58c3e"
+    },
+    {
+      "image": "jellyfin/jellyfin:latest",
+      "name": "Jellyfin",
+      "category": "Media",
+      "description": "Free and open-source media server for movies, music, and TV.",
+      "tags": ["media", "streaming", "opensource"],
+      "color": "#667aa5"
+    },
+    {
+      "image": "emby/embyserver:latest",
+      "name": "Emby",
+      "category": "Media",
+      "description": "Media server for organizing and streaming personal content.",
+      "tags": ["media", "streaming", "server"],
+      "color": "#7e6c59"
+    },
+    {
+      "image": "linuxserver/sonarr:latest",
+      "name": "Sonarr",
+      "category": "Media",
+      "description": "Automatic TV series management and organization application.",
+      "tags": ["media", "automation", "tv"],
+      "color": "#5d87a8"
+    },
+    {
+      "image": "linuxserver/radarr:latest",
+      "name": "Radarr",
+      "category": "Media",
+      "description": "Movie collection management and organization application.",
+      "tags": ["media", "automation", "movies"],
+      "color": "#557da5"
+    },
+    {
+      "image": "linuxserver/lidarr:latest",
+      "name": "Lidarr",
+      "category": "Media",
+      "description": "Music collection management and organization application.",
+      "tags": ["media", "automation", "music"],
+      "color": "#8b6679"
+    },
+    {
+      "image": "linuxserver/readarr:latest",
+      "name": "Readarr",
+      "category": "Media",
+      "description": "Book collection management and organization application.",
+      "tags": ["media", "books", "automation"],
+      "color": "#746a88"
+    },
+    {
+      "image": "linuxserver/calibre-web:latest",
+      "name": "Calibre-Web",
+      "category": "Media",
+      "description": "Web application for browsing and managing ebook libraries.",
+      "tags": ["media", "books", "web"],
+      "color": "#66816f"
+    },
+    {
+      "image": "immich-app/immich-server:release",
+      "name": "Immich",
+      "category": "Media",
+      "description": "Self-hosted photo and video management platform.",
+      "tags": ["media", "photos", "self-hosted"],
+      "color": "#5f78a4"
+    },
+    {
+      "image": "syncthing/syncthing:latest",
+      "name": "Syncthing",
+      "category": "Storage",
+      "description": "Continuous peer-to-peer file synchronization platform.",
+      "tags": ["storage", "sync", "files"],
+      "color": "#5b829c"
+    },
+    {
+      "image": "restic/restic:latest",
+      "name": "Restic",
+      "category": "Storage",
+      "description": "Fast and secure backup utility for files and directories.",
+      "tags": ["storage", "backup", "security"],
+      "color": "#6d8067"
+    },
+    {
+      "image": "duplicati/duplicati:latest",
+      "name": "Duplicati",
+      "category": "Storage",
+      "description": "Web-based encrypted backup solution.",
+      "tags": ["storage", "backup", "web"],
+      "color": "#627c9c"
+    },
+    {
+      "image": "registry:2",
+      "name": "Docker Registry",
+      "category": "DevTools",
+      "description": "Private Docker container image registry.",
+      "tags": ["devtools", "docker", "registry"],
+      "color": "#4f82ad"
+    },
+    {
+      "image": "sonatype/nexus3:latest",
+      "name": "Nexus Repository",
+      "category": "DevTools",
+      "description": "Repository manager for container images and software packages.",
+      "tags": ["devtools", "repository", "docker"],
+      "color": "#637da1"
+    },
+    {
+      "image": "goharbor/harbor-core:latest",
+      "name": "Harbor Core",
+      "category": "DevTools",
+      "description": "Core component of the Harbor cloud-native registry platform.",
+      "tags": ["devtools", "registry", "containers"],
+      "color": "#547b91"
+    },
+    {
+      "image": "httpd:2.4-alpine",
+      "name": "Apache 2.4",
+      "category": "Web",
+      "description": "Apache HTTP Server 2.4 on Alpine Linux.",
+      "tags": ["web", "apache", "http"],
+      "color": "#bc7953"
+    },
+    {
+      "image": "ubuntu:latest",
+      "name": "Ubuntu Latest",
+      "category": "Base",
+      "description": "Latest Ubuntu base image for general-purpose containers.",
+      "tags": ["base", "linux", "ubuntu"],
+      "color": "#c05e5c"
+    },
+    {
+      "image": "debian:latest",
+      "name": "Debian Latest",
+      "category": "Base",
+      "description": "Latest Debian base image for general-purpose containers.",
+      "tags": ["base", "linux", "debian"],
+      "color": "#a34b5c"
+    },
+    {
+      "image": "node:22",
+      "name": "Node.js Full",
+      "category": "Runtime",
+      "description": "Full Debian-based Node.js development environment.",
+      "tags": ["runtime", "javascript", "node"],
+      "color": "#77964d"
+    },
+    {
+      "image": "python:3.13",
+      "name": "Python Full",
+      "category": "Runtime",
+      "description": "Full Debian-based Python development environment.",
+      "tags": ["runtime", "python", "development"],
+      "color": "#557ca0"
+    },
+    {
+      "image": "denoland/deno:latest",
+      "name": "Deno",
+      "category": "Runtime",
+      "description": "Secure JavaScript and TypeScript runtime.",
+      "tags": ["runtime", "javascript", "typescript"],
+      "color": "#5f686d"
+    },
+    {
+      "image": "oven/bun:latest",
+      "name": "Bun",
+      "category": "Runtime",
+      "description": "Fast JavaScript runtime, package manager, bundler, and test runner.",
+      "tags": ["runtime", "javascript", "typescript"],
+      "color": "#77705c"
+    },
+    {
+      "image": "maven:3.9-eclipse-temurin-21",
+      "name": "Apache Maven",
+      "category": "Build",
+      "description": "Java build automation environment using Maven.",
+      "tags": ["build", "java", "maven"],
+      "color": "#9d5f4d"
+    },
+    {
+      "image": "gradle:8-jdk21",
+      "name": "Gradle",
+      "category": "Build",
+      "description": "Gradle build automation environment with Java 21.",
+      "tags": ["build", "java", "gradle"],
+      "color": "#5b7f93"
+    },
+    {
+      "image": "alecthomas/volta:latest",
+      "name": "Volta",
+      "category": "DevTools",
+      "description": "JavaScript toolchain management environment.",
+      "tags": ["devtools", "javascript", "node"],
+      "color": "#617d8b"
     }
   ]
 }
